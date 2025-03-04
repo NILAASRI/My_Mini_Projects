@@ -1,0 +1,98 @@
+:root{
+    /*--blue:#234E70;*/
+    /* --white:#f4f9fd; */
+    --white:#faf8b4;
+    --blue:rgb(6, 10, 48); 
+    /* --blue:rgb(230, 15, 50); */
+    --yellow:gold;
+    /*--grey:#f4f9fd;*/
+    /* --darkblue: rgb(8, 26, 124);*/
+    --lightblue:rgb(116, 116, 238);
+    --darkblue2:rgb(6, 10, 48);
+    --sandal:sandybrown;
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    list-style: none;
+}
+button{
+    outline: none;
+    border: none;
+    cursor: pointer;
+}
+body{
+    /* background-color: rgb(6, 10, 48,.8);  */
+    background-color: lightslategray;
+    min-height: 100vh;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.container{
+    background-color: var(--white);
+    border: 2px solid black;
+    width: 90%;
+    max-width: 30rem;
+    padding: 1rem;
+    box-shadow:rgba(241, 217, 217, 0.35) 1px 5px 15px;
+}
+h1{
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--blue);
+    margin-bottom: 1.5rem;
+}
+.todo_input_btn_box{
+    display:flex;
+    margin-bottom: 1.2rem;
+}
+#todo_input::placeholder{
+    font-size: 1.1rem;
+    color: var(--blue);
+}
+#todo_input{
+    width: 70%;
+    padding: 1rem;
+    outline: none;
+    border: 2px solid var(--blue);
+    font-size: 1.2rem;
+    color:var(--blue);
+}
+.todo_add_btn{
+    width: 30%;
+    background-color: var(--blue);
+    color: var(--white);
+    font-size: 1.5rem;
+}
+.todo_list_lis{
+    background-color: var(--blue);
+    color: var(--white);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    font-size: 1.2rem;
+    box-shadow: rgba(60,64,67,0.3) 0px 1px 2px 0px, rgba(60,64,67,0.15) 0px 2px 6px 2px;
+    margin-bottom: 0.5rem;
+}
+li div:last-child{
+    display: flex;
+    gap: 1rem;
+}
+.done, .remove{
+    background-color: transparent;
+    color: var(--white);
+    font-size: 1rem;
+    border: 2px solid var(--white);
+    padding: 0.2rem 0.4rem;
+   
+}
+.done:hover, .remove:hover{
+    background-color: var(--white);
+    color: var(--blue);
+}
