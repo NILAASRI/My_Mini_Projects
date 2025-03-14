@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Speech Convertor Application</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            
+        }
+        #container{
+            width: 34vw;
+            height: 60vh;
+            box-sizing: border-box;
+            box-shadow: 2px 2px 4px 4px gainsboro;
+            left: 33vw;
+            top: 20vh;
+            position: relative;
+            background-color: white;
+        }
+        h1{
+            padding-top: 20px; 
+            text-align: center;
+            font-weight: bolder;
+            font-size: xx-large;
+            color: indigo;
+        }
+        button::after {
+            content: "";
+            position: absolute;
+            bottom: 300px;  /* Position the underline below the text */
+            left: 0;
+            width: 0;  /* Initially, set the width to 0 */
+            height: 2px;  /* Set the height of the underline */
+            background-color: indigo;  /* Color of the underline */
+            transition: width 0.5s ease-in-out;  /* Animation for width */
+        }
+        
+        /* Trigger the animation when the h1 is hovered */
+        button:hover::after {
+            width: 70%; 
+            left: 15%; /* When hovered, the width becomes 100% of the h1 */
+        }
+        button{
+            color: white;
+            background-color: blueviolet;
+            border: none;
+            padding: 8px;
+            width: 30vw;
+            height: 3vw;
+            text-align: center;
+            font-size: 20px;
+            border-radius: 3px;
+            position: absolute;
+            top: 50vh;
+            left:1.5vw ;
+            cursor: pointer;
+           
+        }
+        button:hover{
+            background-color: indigo;
+        }
+        textarea{
+            position: absolute;
+            top: 8vh;
+            margin-top: 30px;
+            padding:5px;
+            height: 33vh;
+            width: 30vw;
+            box-sizing: border-box;
+            box-shadow: 1px 2px 2px 1px gainsboro;
+            border: 1px solid rgb(196, 179, 179);
+            left:1.5vw;
+            font-size: x-large;
+            resize: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Text to Speech</h1>
+        <textarea name="" id="textToSpeak" placeholder="Enter text"></textarea> <br>
+        <button onclick="speaktext()">Speak</button>
+    </div>
+
+    <script>
+        var speech = new SpeechSynthesisUtterance();/*SpeechSynthesisUtterance()=It is a web speech API class;
+                                                      speech = it is a object*/
+
+        function speaktext(){
+            var textToSpeak = document.getElementById('textToSpeak').value;
+            if(textToSpeak.trim() !== ""){
+                /*The object is called here!*/
+                speech.text = textToSpeak;
+                speech.rate = 1;
+                speech.volume = 5;
+                speech.pitch = 1;
+                /*text,rate,volume,pitch = Properties*/
+                window.speechSynthesis.speak(speech);/*speechSynthesis = Method*/
+            }
+            else{
+                alert("Please enter some text.");
+            }
+        }
+    </script>
+</body>
+</html>
