@@ -14,6 +14,8 @@
             <input type="text" class="form-control" id="taskInput" placeholder="Enter Task">
             <button class="btn btn-primary" id="addTask">Add</button>
         </div>
+        <p id="errorMsg" class="text-danger"></p><!--error message will show here-->
+        <p id="saveMsg" class="text-success"></p>
         <ul id="taskList" class="list-group"></ul>
     </div>
 
@@ -21,14 +23,25 @@
         $(document).ready(function(){
             $("#addTask").click(function(){
                 let task = $("#taskInput").val();
-                if(task){
-                    $("#taskList").append(
+                if(task===""){
+                   $("#errorMsg").text("Please Enter Task");
+                }
+                else{
+                     $("#taskList").append(
                         `<li class="list-group-item d-flex justify-content-between">
                             ${task} <button class="btn btn-danger btn-sm delete">X</button>
                         </li>`
                     );
                     $("#taskInput").val("");
-                }
+                    $("#errorMsg").text("");//Clear error message
+                    $("#saveMsg").text("Task added successfully!");// success message
+                    // Hide it after 3 seconds
+                    setTimeout(function(){
+                        $("#saveMsg").fadeOut(function(){
+                            $(this).text("").show(); // reset for next use
+                        });
+                    }, 1000);
+                    }
             
             });
 
