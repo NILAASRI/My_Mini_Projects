@@ -47,10 +47,10 @@ $(document).ready(function() {
     formData.append("gender", $("#gender").val());
 
     // Profile picture file
-    let profilePic = $("#profilePic")[0].files[0];
-    if (profilePic) {
-      formData.append("profilePic", profilePic);
-    }
+    // let profilePic = $("#profilePic")[0].files[0];
+    // if (profilePic) {
+    //   formData.append("profilePic", profilePic);
+    // }
 
     // AJAX call
     $.ajax({
@@ -78,3 +78,4 @@ $(document).ready(function() {
     });
   });
 });
+
