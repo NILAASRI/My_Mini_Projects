@@ -31,42 +31,35 @@ $(document).ready(function() {
     $("#step1").show();
   });
 
-  // AJAX registration (no form submission)
-  $("#registerBtn").click(function() {
-    let formData = new FormData();
-    formData.append("name", $("#name").val());
-    formData.append("email", $("#email").val());
-    formData.append("password", $("#password").val());
-    formData.append("confirmPassword", $("#confirmPassword").val());
-    formData.append("dob", $("#dob").val());
-    formData.append("age", $("#age").val());
-    formData.append("phone", $("#phone").val());
-    formData.append("address", $("#address").val());
-    formData.append("gender", $("#gender").val());
-    //formData.append("profilePic", $("#profilePic")[0].files[0]);
-
+  // AJAX registration
+  $(document).on("click", "#registerBtn", function() {
     $.ajax({
       url: "php/register.php",
       type: "POST",
-      data: formData,
-      contentType: false,
-      processData: false,
-      success: function(response) {
-        try {
-          let res = JSON.parse(response);
-          alert(res.msg);
-          if (res.status === "success") {
-            $("#registerForm")[0].reset();
-            $("#step2").hide();
-            $("#step1").show();
-          }
-        } catch (e) {
-          alert("Unexpected response from server!");
+      data: {
+        name: $("#name").val(),
+        email: $("#email").val(),
+        password: $("#password").val(),
+        confirmPassword: $("#confirmPassword").val(),
+        dob: $("#dob").val(),
+        age: $("#age").val(),
+        phone: $("#phone").val(),
+        address: $("#address").val(),
+        gender: $("#gender").val()
+      },
+      dataType: "json", // jQuery parses JSON automatically
+      success: function(res) {
+        alert(res.msg);
+        if(res.status === "success") {
+          $("#registerForm")[0].reset();
+          $("#step2").hide();
+          $("#step1").show();
         }
       },
-      // error: function() {
-      //   alert("Error during registration!");
-      // }
+      error: function(xhr, status, error) {
+        console.error("AJAX Error:", status, error);
+        alert("Error during registration!");
+      }
     });
   });
 
