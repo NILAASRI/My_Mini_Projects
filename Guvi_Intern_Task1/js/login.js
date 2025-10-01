@@ -14,10 +14,7 @@ $(document).ready(function() {
             data: { email, password, remember },
             success: function(response) {
                 if(response.status === 'success') {
-                    // Save session info to localStorage
-                    localStorage.setItem('userToken', response.token);
-                    localStorage.setItem('userEmail', email);
-
+                    localStorage.setItem("sessionId", response.sessionId);          
                     alert('Login successful!');
                     window.location.href = 'profile.html'; 
                 } else {
@@ -26,7 +23,7 @@ $(document).ready(function() {
             },
             error: function(error) {
                 console.error(error);
-                alert('Something went wrong!');
+                alert("Login request failed!");
             }
         });
     });
