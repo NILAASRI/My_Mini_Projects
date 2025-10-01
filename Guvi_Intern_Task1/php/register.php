@@ -1,71 +1,77 @@
 <?php
 header('Content-Type: application/json');
 
-// --- MySQL Connection ---
-$mysqli = new mysqli("localhost", "root", "Nilaa@2004", "student");
-if ($mysqli->connect_error) {
-    die(json_encode(["status" => "error", "msg" => "MySQL Connection Failed: ".$mysqli->connect_error]));
+// MySQL
+$mysqli = new mysqli("localhost","root","","student");
+if($mysqli->connect_error){
+    die(json_encode(["status"=>"error","msg"=>"MySQL Error: ".$mysqli->connect_error]));
 }
 
-// --- MongoDB Connection ---
-require 'vendor/autoload.php';
+// MongoDB
+require '../vendor/autoload.php';
+use MongoDB\Client;
 try {
-    $mongo = new MongoDB\Client("mongodb://localhost:27017");
+    $mongo = new Client("mongodb://localhost:27017");
     $profiles = $mongo->new_profiles->profiles;
-} catch (Exception $e) {
-    die(json_encode(["status"=>"error","msg"=>"MongoDB Connection Failed: ".$e->getMessage()]));
+}catch(Exception $e){
+    die(json_encode(["status"=>"error","msg"=>"MongoDB Error: ".$e->getMessage()]));
 }
 
-// --- Get Form Data ---
-$name = $_POST['name'] ?? '';
-$email = $_POST['email'] ?? '';
+// Get POST Data
+$name = trim($_POST['name'] ?? '');
+$email = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
-$confirmPassword = $_POST['confirmPassword'] ?? '';
+$confirm = $_POST['confirmPassword'] ?? '';
 $dob = $_POST['dob'] ?? '';
-$phone = $_POST['phone'] ?? '';
-$age = $_POST['age'] ?? '';
-$address = $_POST['address'] ?? '';
-$gender = $_POST['gender'] ?? '';
+$phone = trim($_POST['phone'] ?? '');
+$age = intval($_POST['age'] ?? 0);
+$address = trim($_POST['address'] ?? '');
+$gender = trim($_POST['gender'] ?? '');
 
-// --- Password Validation ---
-if ($password !== $confirmPassword) {
-    echo json_encode(["status" => "error", "msg" => "Passwords do not match"]);
+// Validation
+if(empty($name)||empty($email)||empty($password)){
+    echo json_encode(["status"=>"error","msg"=>"Name, Email, Password required"]);
+    exit;
+}
+if(!filter_var($email,FILTER_VALIDATE_EMAIL)){
+    echo json_encode(["status"=>"error","msg"=>"Invalid email"]);
+    exit;
+}
+if($password!==$confirm){
+    echo json_encode(["status"=>"error","msg"=>"Passwords do not match"]);
     exit;
 }
 
-// --- Hash Password ---
-$passwordHash = password_hash($password, PASSWORD_BCRYPT);
+// Hash password
+$passHash = password_hash($password,PASSWORD_BCRYPT);
 
-// --- MySQL Insert ---
-$stmt = $mysqli->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
-if (!$stmt) {
-    echo json_encode(["status"=>"error","msg"=>"MySQL Prepare Failed: ".$mysqli->error]);
-    exit;
-}
-$stmt->bind_param("sss", $name, $email, $passwordHash);
-
-if ($stmt->execute()) {
+// MySQL Insert
+$stmt = $mysqli->prepare("INSERT INTO users (email,password) VALUES (?,?)");
+$stmt->bind_param("ss",$email,$passHash);
+if($stmt->execute()){
     $userId = $stmt->insert_id;
-
-    // --- MongoDB Insert ---
-    try {
+    // MongoDB Insert
+    try{
         $profiles->insertOne([
-            "userId" => $userId,
-            "name" => $name,
-            "email" => $email,
-            "dob" => $dob,
-            "contact" => $phone,
-            "age" => $age,
-            "address" => $address,
-            "gender" => $gender
+            "userId"=>$userId,
+            "name"=>$name,
+            "email"=>$email,
+            "dob"=>$dob,
+            "contact"=>$phone,
+            "age"=>$age,
+            "address"=>$address,
+            "gender"=>$gender,
+            "created_at"=>new MongoDB\BSON\UTCDateTime()
         ]);
-    } catch (Exception $e) {
-        echo json_encode(["status"=>"error","msg"=>"MongoDB Insert Failed: ".$e->getMessage()]);
-        exit;
+        echo json_encode(["status"=>"success","msg"=>"Registered successfully"]);
+    }catch(Exception $e){
+        $mysqli->query("DELETE FROM users WHERE id=$userId"); // rollback
+        echo json_encode(["status"=>"error","msg"=>"MongoDB insert failed"]);
     }
-
-    echo json_encode(["status" => "success", "msg" => "Registration successful"]);
-} else {
-    echo json_encode(["status" => "error", "msg" => "Database error or email already exists: ".$stmt->error]);
+}else{
+    echo json_encode(["status"=>"error","msg"=>"Email might already exist"]);
 }
+
+$stmt->close();
+$mysqli->close();
 ?>
